@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Key Mirror",
+  "version": "4.2.0",
+  "description": "Mirror keypresses from one tab to another. Works on any website.",
+  "permissions": ["tabs", "scripting", "debugger", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  }
+}

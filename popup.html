@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Key Mirror v4</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 360px; background: #0f172a; color: #e2e8f0; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; user-select: none; }
+
+  .header { padding: 12px 16px; background: #1e293b; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; }
+  .header-title { font-size: 15px; font-weight: 700; color: #f1f5f9; display: flex; align-items: center; gap: 8px; }
+  .refresh { background: none; border: none; color: #64748b; cursor: pointer; font-size: 16px; padding: 2px 6px; transition: color .15s; }
+  .refresh:hover { color: #e2e8f0; }
+
+  .card { margin: 12px; background: #1e293b; border: 1px solid #334155; border-radius: 10px; overflow: hidden; }
+  .card-header { padding: 10px 14px; background: #273348; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
+  .card-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+
+  .status-pill { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #334155; flex-shrink: 0; }
+  .dot.on { background: #22c55e; box-shadow: 0 0 6px #22c55e; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+  .pill-text { color: #64748b; }
+  .pill-text.on { color: #86efac; }
+
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; }
+
+  select, input[type=number] {
+    width: 100%; background: #0f172a; border: 1px solid #334155;
+    border-radius: 6px; color: #e2e8f0; padding: 7px 10px;
+    font-size: 13px; outline: none; cursor: pointer; transition: border-color .15s;
+  }
+  select[multiple] { height: auto; min-height: 72px; padding: 4px; }
+  select[multiple] option { padding: 4px 8px; border-radius: 4px; }
+  select[multiple] option:checked { background: #3b4fd0; color: #fff; }
+  select:focus, input[type=number]:focus { border-color: #6366f1; }
+  select option { background: #1e293b; }
+
+  .select-hint { font-size: 10px; color: #475569; margin-top: 2px; }
+
+  .two-col { display: flex; gap: 8px; }
+  .two-col > * { flex: 1; }
+
+  .mode-tabs { display: flex; gap: 3px; background: #0f172a; border-radius: 6px; padding: 3px; }
+  .mode-tab { flex: 1; padding: 5px; border: none; border-radius: 4px; background: none; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; transition: all .15s; text-transform: uppercase; letter-spacing: 0.04em; }
+  .mode-tab.active { background: #334155; color: #e2e8f0; }
+
+  .chips-wrap { display: flex; flex-wrap: wrap; gap: 5px; min-height: 24px; }
+  .chip { display: flex; align-items: center; gap: 4px; background: #0f172a; border: 1px solid #334155; border-radius: 5px; padding: 3px 8px; font-size: 12px; font-weight: 600; color: #a5b4fc; }
+  .chip-x { background: none; border: none; color: #475569; cursor: pointer; font-size: 14px; line-height: 1; padding: 0; transition: color .15s; }
+  .chip-x:hover { color: #ef4444; }
+
+  .key-builder { display: flex; gap: 6px; align-items: center; }
+  .key-builder select { flex: 1; padding: 6px 8px; font-size: 12px; }
+  .btn-add-chip { padding: 6px 12px; background: rgba(99,102,241,0.15); border: 1px solid #6366f1; border-radius: 6px; color: #a5b4fc; font-size: 12px; font-weight: 700; cursor: pointer; transition: background .15s; white-space: nowrap; }
+  .btn-add-chip:hover { background: rgba(99,102,241,0.3); }
+
+  .auto-list { display: flex; flex-direction: column; gap: 5px; }
+  .auto-item { display: flex; align-items: center; gap: 6px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 6px 10px; }
+  .auto-key-label { font-weight: 700; color: #34d399; font-size: 13px; flex: 1; }
+  .auto-detail { font-size: 11px; color: #64748b; white-space: nowrap; }
+  .auto-x { background: none; border: none; color: #475569; cursor: pointer; font-size: 15px; line-height: 1; padding: 0 2px; transition: color .15s; }
+  .auto-x:hover { color: #ef4444; }
+
+  /* Add auto-key row — now with hold field */
+  .add-auto-row { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+  .add-auto-row select { flex: 1; min-width: 70px; padding: 6px 7px; font-size: 12px; }
+  .short-input { width: 62px !important; padding: 6px 7px !important; font-size: 12px !important; text-align: center; }
+  .input-label { font-size: 10px; color: #475569; white-space: nowrap; }
+  .btn-add-auto { padding: 6px 11px; background: rgba(16,185,129,0.15); border: 1px solid #10b981; border-radius: 6px; color: #34d399; font-size: 12px; font-weight: 700; cursor: pointer; transition: background .15s; white-space: nowrap; }
+  .btn-add-auto:hover { background: rgba(16,185,129,0.28); }
+
+  .input-group { display: flex; align-items: center; gap: 4px; }
+
+  .toggle-btn { width: 100%; padding: 9px; border: none; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .2s; letter-spacing: 0.02em; }
+  .toggle-btn.off { background: #6366f1; color: #fff; }
+  .toggle-btn.off:hover { background: #4f46e5; }
+  .toggle-btn.on { background: #dc2626; color: #fff; }
+  .toggle-btn.on:hover { background: #b91c1c; }
+  .toggle-btn:disabled { background: #1e293b; color: #475569; cursor: not-allowed; }
+
+  .empty-note { font-size: 12px; color: #475569; }
+  .note { font-size: 11px; color: #334155; line-height: 1.5; padding: 0 12px 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">🪞 Key Mirror v4</div>
+  <button class="refresh" id="refreshBtn">↻</button>
+</div>
+
+<!-- ═══ MIRROR CARD ══════════════════════════════════════════════════════════ -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">🔁 Mirror Keys</span>
+    <div class="status-pill">
+      <div class="dot" id="mirrorDot"></div>
+      <span class="pill-text" id="mirrorStatus">Inactive</span>
+    </div>
+  </div>
+  <div class="card-body">
+
+    <div class="two-col">
+      <div class="field">
+        <label>Source Tab</label>
+        <select id="mirrorSource"></select>
+      </div>
+      <div class="field">
+        <label>Target Tabs</label>
+        <select id="mirrorTarget" multiple></select>
+        <span class="select-hint">Hold Ctrl to select multiple</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="all">All keys</button>
+        <button class="mode-tab" data-mode="selected">Specific keys</button>
+      </div>
+    </div>
+
+    <div id="mirrorSpecificSection" style="display:none; flex-direction:column; gap:8px;">
+      <div class="chips-wrap" id="mirrorChips"><span class="empty-note">No keys added</span></div>
+      <div class="key-builder">
+        <select id="mirrorMod">
+          <option value="none">No modifier</option>
+          <option value="ctrl">Ctrl</option>
+          <option value="alt">Alt</option>
+          <option value="shift">Shift</option>
+          <option value="ctrl+alt">Ctrl+Alt</option>
+          <option value="ctrl+shift">Ctrl+Shift</option>
+        </select>
+        <select id="mirrorKey"></select>
+        <button class="btn-add-chip" id="btnAddMirrorKey">+ Add</button>
+      </div>
+    </div>
+
+    <button class="toggle-btn off" id="mirrorToggle">▶ Start Mirror</button>
+  </div>
+</div>
+
+<!-- ═══ AUTO-REPEAT CARD ════════════════════════════════════════════════════ -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">⏱ Auto-Repeat Keys</span>
+    <div class="status-pill">
+      <div class="dot" id="autoDot"></div>
+      <span class="pill-text" id="autoStatus">Inactive</span>
+    </div>
+  </div>
+  <div class="card-body">
+
+    <div class="field">
+      <label>Target Tabs</label>
+      <select id="autoTarget" multiple></select>
+      <span class="select-hint">Hold Ctrl to select multiple</span>
+    </div>
+
+    <div class="auto-list" id="autoList"><span class="empty-note">No auto-repeat keys</span></div>
+
+    <!-- Add row: modifier | key | interval ms | hold ms | Add -->
+    <div class="add-auto-row">
+      <select id="autoMod">
+        <option value="none">None</option>
+        <option value="ctrl">Ctrl</option>
+        <option value="alt">Alt</option>
+        <option value="shift">Shift</option>
+        <option value="ctrl+alt">Ctrl+Alt</option>
+        <option value="ctrl+shift">Ctrl+Shift</option>
+      </select>
+      <select id="autoKey"></select>
+      <div class="input-group">
+        <input class="short-input" id="autoMs" type="number" value="500" min="50" max="30000" step="50" title="Repeat every X ms">
+        <span class="input-label">ms</span>
+      </div>
+      <div class="input-group">
+        <input class="short-input" id="autoHoldMs" type="number" value="0" min="0" max="5000" step="50" title="Hold key for X ms (0 = tap)">
+        <span class="input-label">hold</span>
+      </div>
+      <button class="btn-add-auto" id="btnAddAuto">Add</button>
+    </div>
+
+    <button class="toggle-btn off" id="autoToggle">▶ Start Auto</button>
+  </div>
+</div>
+
+<p class="note">⚠ Target tabs show "Chrome is being debugged" — required for trusted key injection.</p>
+
+<script src="popup.js"></script>
+</body>
+</html>

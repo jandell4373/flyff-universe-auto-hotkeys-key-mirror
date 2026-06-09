@@ -1,6 +1,7 @@
-# Key Mirror — Flyff Universe Auto Hotkeys
+# Key Mirror — Flyff Universe Auto Hotkeys & Key-mirror
 
-A Chrome/Brave extension for Flyff Universe that mirrors hotkeys across multiple tabs in real time. Useful for multi-client setups where you want actions on one tab to automatically happen on another.
+A Chrome/Brave extension that mirrors hotkeys across multiple browser tabs in real time. 
+Originally built for Flyff Universe multi-client setups, but works on any browser-based game or web application.
 
 Uses the Chrome DevTools Protocol (CDP) via `chrome.debugger` for trusted key injection — keys arrive as native input at the browser engine level, indistinguishable from real keypresses.
 
@@ -42,7 +43,7 @@ When you open the extension popup, the **Source** and **Target** dropdowns show 
 | Attack / Heal | `Num 1` → mirrors to → `Num 1` | Healer auto-heals when you attack |
 | Skill / Geburah Tiphreth | `Num 2` → mirrors to → `Num 2` | Healer casts Geburah Tiphreth |
 
-### Facetank Setup Sample — Auto Mob + Heal
+### Facetank Setup Sample — Mob + Heal
 
 | Key | Attacker Tab | Healer Tab |
 |---|---|---|
@@ -57,8 +58,6 @@ When you open the extension popup, the **Source** and **Target** dropdowns show 
 5. Play on the Source tab — only the keys you configured will fire on the Target tab(s) simultaneously.
 
 ---
-
-
 
 ## Permissions
 

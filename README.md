@@ -1,8 +1,8 @@
-# Key Mirror
+# Key Mirror — Flyff Universe Auto Hotkeys
 
-A Chrome/Brave extension that mirrors keypresses from one browser tab to one or more other tabs in real time. Useful for multi-client setups where you want actions on one tab to be reflected on others.
+A Chrome/Brave extension for Flyff Universe that mirrors hotkeys across multiple tabs in real time. Useful for multi-client setups where you want actions on one tab to automatically happen on another.
 
-Uses the Chrome DevTools Protocol (CDP) via `chrome.debugger` for trusted key injection — keys arrive as native input at the browser engine level.
+Uses the Chrome DevTools Protocol (CDP) via `chrome.debugger` for trusted key injection — keys arrive as native input at the browser engine level, indistinguishable from real keypresses.
 
 ## Features
 
@@ -24,32 +24,41 @@ This extension is not on the Chrome Web Store. Install it manually:
 4. Click **Load unpacked**
 5. Select the extension folder
 
-## Usage
+## Tab Selection
 
-### Mirror Keys
+When you open the extension popup, the **Source** and **Target** dropdowns show **all currently open tabs** in your browser — not just Flyff Universe tabs. This means you can see and select any tab by its title.
 
-1. Open the extension popup
-2. Select the **Source tab** (the tab you're actively using)
-3. Select one or more **Target tabs** — hold `Ctrl` to select multiple
-4. Choose **All keys** to mirror everything, or **Specific keys** to add individual key combos
-5. Click **▶ Start Mirror**
+- The **active tab** (the one you're currently on) is marked with a ★ at the top of the list
+- All other open tabs are listed below it
+- For the **Target** field, hold `Ctrl` while clicking to select multiple tabs at once
+- If you open new tabs after the popup is already open, click the **↻ refresh** button to update the list
 
-To stop, click **■ Stop Mirror**.
+## Example Usage
 
-### Auto-Repeat Keys
+### 1v1 Setup — Attacker + Healer
 
-1. Select one or more **Target tabs**
-2. Pick a modifier and key from the dropdowns
-3. Set the **interval** (how often the key fires, in ms)
-4. Set the **hold** duration (how long the key is held per press — `0` for a tap)
-5. Click **Add**, then **▶ Start Auto**
+| Action | Attacker Tab | Healer Tab |
+|---|---|---|
+| Attack / Heal | `Num 1` → mirrors to → `Num 1` | Healer auto-heals when you attack |
+| Skill / Geburah Tiphreth | `Num 2` → mirrors to → `Num 2` | Healer casts Geburah Tiphreth |
 
-### Notes
+### Facetank Setup Sample — Auto Mob + Heal
 
-- The target tab(s) will show a **"Chrome is being debugged"** banner — this is expected and required for trusted key injection. It cannot be hidden.
-- Keys injected via CDP are `isTrusted: true` at the browser level, meaning they are indistinguishable from real keypresses at the page/application level.
-- Source and target tabs must not be the same tab.
-- Extension does not work on `chrome://` pages or the Chrome Web Store.
+| Key | Attacker Tab | Healer Tab |
+|---|---|---|
+| `Num 1` | Mob/Attack skill | Assist Heal Skill |
+| `Num 2` | Spam skill | Healrain |
+
+**How to set it up:**
+1. Open your Attacker and Healer tabs
+2. Set **Source** = Attacker tab, **Target** = Healer tab
+3. Under Mirror Keys, select **All keys** (or add `Num 1`,`Num 2` and etc. specifically)
+4. Click **▶ Start Mirror**
+5. Play on the Source tab — only the keys you configured will fire on the Target tab(s) simultaneously.
+
+---
+
+
 
 ## Permissions
 
@@ -60,6 +69,17 @@ To stop, click **■ Stop Mirror**.
 | `debugger` | Attach CDP session to target tabs for key injection |
 | `storage` | Save your configuration locally |
 
+## Notes
+
+- Target tabs will show a **"Chrome is being debugged"** banner — this is expected and required for trusted key injection
+- Source and target tabs must not be the same tab
+- Does not work on `chrome://` pages or the Chrome Web Store
+
+## Disclaimer
+
+This tool is intended for personal convenience. Use it wisely and at your own risk. Automating inputs in online games may violate the game's terms of service.
+
 ## License
 
 MIT
+
